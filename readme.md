@@ -1,6 +1,8 @@
 # Synchronous Distributed Traning Library (PyTorch)
 Contained within this repository are multiple synchronous distributed training algorithms (SDTL). Researcher who implement `DistributedDataParallel` in PyTorch need only replace a single line of code to utilize this library.
 
+*Contributors: Tolga Dimlioglu (New York University), Yunfei Teng (New York University)*
+
 ![](SDTL.png)
 
 **Vanilla PyTorch (DataParallel):**
