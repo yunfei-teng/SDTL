@@ -126,15 +126,15 @@ if __name__ == "__main__":
     parser.add_argument('--ip_address', type=str, required=True)
     parser.add_argument('--node_rank',  type=int, default = 0) 
     parser.add_argument('--node_gpus',  type=int, default = 100) 
-    parser.add_argument('--world_size', type=int, default = 1)
+    parser.add_argument('--num_nodes', type=int, default = 1)
     args = parser.parse_args()
 
     cur_workers   = min(args.node_gpus, torch.cuda.device_count())
-    total_workers = torch.zeros(args.world_size).int()
+    total_workers = torch.zeros(args.num_nodes).int()
     total_workers[args.node_rank] = cur_workers
-    if args.world_size > 1:
+    if args.num_nodes > 1:
         init_method = "tcp://{ip}:{port}0".format(ip=args.ip_address, port=2432)
-        dist.init_process_group(rank=args.node_rank, world_size=args.world_size, backend='gloo', init_method=init_method)
+        dist.init_process_group(rank=args.node_rank, world_size=args.num_nodes, backend='gloo', init_method=init_method)
         dist.all_redcude(total_workers, op=torch.distributed.ReduceOp.SUM, async_op=False)
     accm_workers = total_workers[:args.node_rank].sum().item()
     world_size   = total_workers.sum().item()
